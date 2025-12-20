@@ -1,19 +1,24 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class NavMeshAgentMover : Mover
+public class NavMeshAgentMover
 {
     private NavMeshAgent _agent;
+    private Vector3 _target;
 
-    public NavMeshAgentMover(NavMeshAgent agent, Transform charachterTransform, float moveSpeed, float rotationSpeed) : base(charachterTransform, moveSpeed, rotationSpeed)
+    public NavMeshAgentMover(NavMeshAgent agent)
     {
+        _target = agent.transform.position;
         _agent = agent;
-        _agent.speed = moveSpeed;
-        _agent.angularSpeed = rotationSpeed;
     }
 
-    public override void ProcessMoveTo(Vector3 target, float deltaTime)
+    public Vector3 CurrentVelocity => _agent.velocity;
+    public Vector3 CurrentTarget => _target;
+
+    public void Update()
     {
-        _agent.SetDestination(target);
+        _agent.SetDestination(_target);
     }
+
+    public void SetMoveDirection(Vector3 target) => _target = target;
 }

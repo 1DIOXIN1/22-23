@@ -2,55 +2,40 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class Player : MonoBehaviour, IDamageble
+public class Player : MonoBehaviour, IDamageble, IDirectionMovable, IDirectionRotator
 {
-    [SerializeField] private float _moveSpeed;
     [SerializeField] private float _rotationSpeed;
     [SerializeField] private int _maxHealth;
     
     private NavMeshAgent _agent;
-    private Vector3 _targetPosition;
-    private Camera _camera;
-    private Mover _mover;
+    private NavMeshAgentMover _mover;
+    private DirectionRotator _rotator;
     private Health _health;
 
     public int CurrentHealth => _health.CurrentHealth;
     public int MaxHealth => _health.MaxHealth;
-    public Vector3 CurrentVelocity => _agent.velocity;
-    public Vector3 TargetPosition => _targetPosition;
+    public Vector3 CurrentVelocity => _mover.CurrentVelocity;
+    public Quaternion CurrentRotation => _rotator.CurrentRotation;
+    public Vector3 TargetPosition => _mover.CurrentTarget;
 
     private void Awake()
     {
-        _camera = Camera.main;
         _agent = GetComponent<NavMeshAgent>();
 
         _health = new Health(_maxHealth);
-        _mover = new NavMeshAgentMover(_agent, transform, _moveSpeed, _rotationSpeed);
+        _mover = new NavMeshAgentMover(_agent);
+        _rotator = new DirectionRotator(transform, _rotationSpeed);
     }
 
     private void Update()
     {
-        if(IsDead() == false && Input.GetKeyDown(KeyCode.Mouse0) && TryGetTargetPoint(Input.mousePosition, out _targetPosition))
-        {
-            _mover.ProcessMoveTo(_targetPosition, Time.deltaTime);
-            _mover.ProcessRotateTo(_targetPosition, Time.deltaTime);
-        }
+        _mover.Update();
+        _rotator.Update(Time.deltaTime);
     }
+
+    public void SetMoveDirection(Vector3 direction) => _mover.SetMoveDirection(direction);
+    public void SetRotationDirection(Vector3 direction) => _rotator.SetRotationDirection(direction);
 
     public void TakeDamage(int value) => _health.TakeDamage(value);
     public bool IsDead() => _health.IsDead;
-
-    private bool TryGetTargetPoint(Vector3 cursorPosition, out Vector3 targetPoint)
-    {
-        targetPoint = Vector3.zero;
-        Ray ray = _camera.ScreenPointToRay(cursorPosition);
-
-        if(Physics.Raycast(ray, out RaycastHit hitInfo))
-        {
-            targetPoint = hitInfo.point;
-            return true;
-        }
-
-        return false;     
-    }
 }

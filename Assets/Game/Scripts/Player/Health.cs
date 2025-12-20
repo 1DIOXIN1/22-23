@@ -9,6 +9,7 @@ public class Health
 
         IsDead = false;
     }
+    
     public int MaxHealth {get; private set;}
     public int CurrentHealth {get; private set;}
     public bool IsDead {get; private set;}
