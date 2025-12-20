@@ -204,10 +204,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damage: 20
-  _explosionDistance: 2
-  _mineRadius: 1
+  _explosionRadius: 3
+  _activationRadius: 1
   _duration: 3
-  _player: {fileID: 0}
 --- !u!114 &7818401272491388790
 MonoBehaviour:
   m_ObjectHideFlags: 0

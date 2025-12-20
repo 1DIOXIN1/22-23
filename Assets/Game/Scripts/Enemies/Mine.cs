@@ -1,25 +1,19 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Mine : MonoBehaviour
 {
     [SerializeField] private int _damage;
-    [SerializeField] private int _explosionDistance;
-    [SerializeField] private int _mineRadius;
+    [SerializeField] private int _explosionRadius;
+    [SerializeField] private int _activationRadius;
     [SerializeField] private int _duration;
-    [SerializeField] private Player _player;
-    
+
     private bool _active;
     private float _time;
-    private DistanceDetector _distanceDetrector;
-
-    private void Start()
-    {
-        _distanceDetrector = new DistanceDetector(transform, _player.transform);
-    }
 
     private void Update()
     {
-        if(OnMine())
+        if(!_active && OnMine())
         {
             Activate();
         }
@@ -31,24 +25,48 @@ public class Mine : MonoBehaviour
 
         if(_time >= _duration)
         {
-            if(InRadiusExplosion())
-                _player.TakeDamage(_damage);
+            Explosion();
 
             Destroy(gameObject);
         }
     }
 
-    private bool OnMine() => _distanceDetrector.InZone(_mineRadius);
-    private bool InRadiusExplosion() => _distanceDetrector.InZone(_explosionDistance);
+    private bool OnMine()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, _activationRadius);
+
+        foreach(Collider collider in colliders)
+        {
+            IDamageble damageble = collider.GetComponent<IDamageble>();
+
+            if(damageble != null)
+                return true;
+        }
+
+        return false;
+    }    
+
+    private void Explosion()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, _explosionRadius);
+        
+        foreach(Collider collider in colliders)
+        {
+            IDamageble damageble = collider.GetComponent<IDamageble>();
+
+            if(damageble != null)
+                damageble.TakeDamage(_damage);
+        }
+    }
 
     private void Activate() => _active = true;
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = new Color(255, 0, 0, 0.5f);
-        Gizmos.DrawSphere(transform.position, _explosionDistance);
+        Gizmos.color = new Color(1, 0, 0, 0.5f);
+        Gizmos.DrawSphere(transform.position, _explosionRadius);
 
-        Gizmos.color = new Color(0, 0, 255, 0.5f);
-        Gizmos.DrawSphere(transform.position, _mineRadius);
+        Gizmos.color = new Color(0, 0, 1, 0.5f);
+        Gizmos.DrawSphere(transform.position, _activationRadius);
     }
 }

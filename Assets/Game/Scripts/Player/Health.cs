@@ -27,6 +27,9 @@ public class Health
 
     public void TakeDamage(int value)
     {
+        if(IsDead)
+            return;
+
         if(value < 0)
         {
             Debug.Log("Неправильное значение урона");

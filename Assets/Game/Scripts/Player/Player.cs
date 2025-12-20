@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IDamageble
 {
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _rotationSpeed;
@@ -37,7 +37,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damage) => _health.TakeDamage(damage);
+    public void TakeDamage(int value) => _health.TakeDamage(value);
     public bool IsDead() => _health.IsDead;
 
     private bool TryGetTargetPoint(Vector3 cursorPosition, out Vector3 targetPoint)
