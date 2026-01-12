@@ -3,6 +3,7 @@ using UnityEngine;
 public class Game : MonoBehaviour
 {
     [SerializeField] Player _player;
+    [SerializeField] SpawnerWithDuration _spawner;
 
     private Camera _camera;
     private Controller _controller;
@@ -10,7 +11,9 @@ public class Game : MonoBehaviour
     private void Awake()
     {
         _camera = Camera.main;
-        _controller = new TopDownController(_player, _player, _camera);
+        _controller = new TopDownController(_player, _player, _player, _spawner, _camera);
+
+        _spawner.Initialization(_player.transform);
     }
 
     private void Update()

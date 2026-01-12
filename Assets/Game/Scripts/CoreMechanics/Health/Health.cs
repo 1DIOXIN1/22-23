@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class Health
 {
-    public Health(int _startHealth)
+    public Health(int startHealth)
     {
-        MaxHealth = _startHealth;
+        MaxHealth = startHealth;
         CurrentHealth = MaxHealth;
 
         IsDead = false;
@@ -22,7 +22,11 @@ public class Health
             return;
         }
 
-        CurrentHealth += value;
+        if(CurrentHealth + value >= MaxHealth)
+            CurrentHealth = MaxHealth;
+        else
+            CurrentHealth += value;
+
         Debug.Log("Текущее хп: " + CurrentHealth);
     }
 

@@ -8,6 +8,7 @@ public class PlayerView : MonoBehaviour
 
     private readonly int _velocityHash = Animator.StringToHash("Velocity");
     private readonly int _isDeadHash = Animator.StringToHash("IsDead");
+    private readonly int _inJumpProcessHash = Animator.StringToHash("InProcessJump");
 
     private float _perecentInjuredLine = 0.3f;
     private GameObject _CurrentMarker;
@@ -20,6 +21,8 @@ public class PlayerView : MonoBehaviour
             return;
         }
 
+        _animator.SetBool(_inJumpProcessHash, _player.InJumpProcess);
+
         if(_player.CurrentHealth / _player.MaxHealth <= _perecentInjuredLine)
             _animator.SetLayerWeight(1, 1);
         else
@@ -27,10 +30,10 @@ public class PlayerView : MonoBehaviour
 
         _animator.SetFloat(_velocityHash, _player.CurrentVelocity.magnitude);
 
-        MarkerLogic();
+        SpawnMarker();
     }
 
-    private void MarkerLogic()
+    private void SpawnMarker()
     {
         if( _player.CurrentVelocity.magnitude >= 0.05f)
         {
