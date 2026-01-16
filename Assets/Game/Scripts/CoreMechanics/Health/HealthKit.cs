@@ -6,7 +6,7 @@ public class HealthKit : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        IDamageble damageble = other.GetComponent<IDamageble>();
+        IHealable damageble = other.GetComponent<IHealable>();
 
         if(damageble != null)
         {

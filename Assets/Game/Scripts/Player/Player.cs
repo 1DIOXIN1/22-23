@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class Player : MonoBehaviour, IDamageble, IDirectionMovable, IDirectionRotator, IDirectionJumper
+public class Player : MonoBehaviour, IDamageble, IHealable, IDirectionMovable, IDirectionRotator, IDirectionJumper
 {
     [SerializeField] private float _rotationSpeed;
     [SerializeField] private int _maxHealth;

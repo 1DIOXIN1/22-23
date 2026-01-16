@@ -2,15 +2,20 @@ using UnityEngine;
 using UnityEngine.Audio;
 
 [RequireComponent(typeof(AudioMixer))]
-public class AudioHandler : MonoBehaviour
+public class AudioHandler
 {
-    [SerializeField] private AudioMixer _audioMixer;
-
+    private const string GeneralKey = "GeneralVolume";
     private float _offVolumeValue = -80;
     private float _onVolumeValue = 0;
-    private const string GeneralKey = "GeneralVolume";
+    private AudioMixer _audioMixer;
 
-    private void Awake() => Initialization();
+    public AudioHandler(AudioMixer audioMixer)
+    {
+        _audioMixer = audioMixer;
+
+        _audioMixer.GetFloat(GeneralKey, out float value);
+        _onVolumeValue = value;
+    }
 
     public void OnGeneralAudio()
     {
@@ -20,11 +25,5 @@ public class AudioHandler : MonoBehaviour
     public void OffGeneralAudio()
     {
         _audioMixer.SetFloat(GeneralKey, _offVolumeValue);
-    }
-    
-    private void Initialization()
-    {
-        _audioMixer.GetFloat(GeneralKey, out float value);
-        _onVolumeValue = value;
     }
 }

@@ -1,19 +1,17 @@
 using System.Collections;
 using UnityEngine;
 
-public abstract class SpawnerWithDuration : MonoBehaviour
+public class SpawnerWithDuration : MonoBehaviour
 {
-    protected Transform _center;
-
-    [SerializeField] protected float _duration;
-    [SerializeField] protected float _radius;
+    [SerializeField] private float _duration;
     [SerializeField] private GameObject _prafabSpawnObject;
+    private ISpawnPointHolder _spawnPointHolder;
 
     private Coroutine _spawnProcess;
     
-    public virtual void Initialization(Transform center)
+    public void Initialization(ISpawnPointHolder spawnPointHolder)
     {
-        _center = center;
+        _spawnPointHolder = spawnPointHolder;
 
         TurnOn();
     }
@@ -31,7 +29,6 @@ public abstract class SpawnerWithDuration : MonoBehaviour
         _spawnProcess = null;
     }
 
-    protected abstract Vector3 GetPoint();
 
     private IEnumerator Spawn()
     {
@@ -39,7 +36,7 @@ public abstract class SpawnerWithDuration : MonoBehaviour
         {
             yield return new WaitForSeconds(_duration);
             
-            Instantiate(_prafabSpawnObject, GetPoint(), Quaternion.identity);
+            Instantiate(_prafabSpawnObject, _spawnPointHolder.GetSpawnPoint(), Quaternion.identity);
         }
     }
 }
